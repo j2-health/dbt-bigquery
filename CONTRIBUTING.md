@@ -14,8 +14,7 @@ For those wishing to contribute we highly suggest reading the [dbt-core](https:/
 
 ### Signing the CLA
 
-Please note that all contributors to `dbt-bigquery` must sign the [Contributor License Agreement](https://docs.getdbt.com/docs/contributor-license-agreements) to have their Pull Request merged into an `dbt-bigquery` codebase. If you are unable to sign the CLA, then the `dbt-bigquery` maintainers will unfortunately be unable to merge your Pull Request. You are, however, welcome to open issues and comment on existing ones.
-
+Please note that all contributors to the original `dbt-bigquery` must sign the [Contributor License Agreement](https://docs.getdbt.com/docs/contributor-license-agreements) to have their Pull Request merged into the original codebase. This fork maintained by J2 Health may have different contribution requirements.
 
 ## Getting the code
 
@@ -23,17 +22,17 @@ You will need `git` in order to download and modify the `dbt-bigquery` source co
 
 ### External contributors
 
-If you are not a member of the `dbt-labs` GitHub organization, you can contribute to `dbt-bigquery` by forking the `dbt-bigquery` repository. For a detailed overview on forking, check out the [GitHub docs on forking](https://help.github.com/en/articles/fork-a-repo). In short, you will need to:
+If you are not a member of the `j2-health` GitHub organization, you can contribute to `dbt-bigquery` by forking the `dbt-bigquery` repository. For a detailed overview on forking, check out the [GitHub docs on forking](https://help.github.com/en/articles/fork-a-repo). In short, you will need to:
 
 1. fork the `dbt-bigquery` repository
 2. clone your fork locally
 3. check out a new branch for your proposed changes
 4. push changes to your fork
-5. open a pull request against `dbt-labs/dbt-bigquery` from your forked repository
+5. open a pull request against `j2-health/dbt-bigquery` from your forked repository
 
-### dbt Labs contributors
+### J2 Health contributors
 
-If you are a member of the `dbt Labs` GitHub organization, you will have push access to the `dbt-bigquery` repo. Rather than forking `dbt-bigquery` to make your changes, just clone the repository, check out a new branch, and push directly to that branch.
+If you are a member of the `J2 Health` GitHub organization, you will have push access to the `dbt-bigquery` repo. Rather than forking `dbt-bigquery` to make your changes, just clone the repository, check out a new branch, and push directly to that branch.
 
 
 ## Running `dbt-bigquery` in development
@@ -54,7 +53,7 @@ To confirm you have the correct version of `dbt-core` installed please run `dbt 
 
 ### Initial Setup
 
-`dbt-bigquery` contains [unit](https://github.com/dbt-labs/dbt-bigquery/tree/main/tests/unit) and [functional](https://github.com/dbt-labs/dbt-bigquery/tree/main/tests/functional) tests. functional tests require testing against an actual BigQuery warehouse. We have CI set up to test against a BigQuery warehouse. In order to run functional tests locally, you will need a `test.env` file in the root of the repository that contains credentials for BigQuery.
+`dbt-bigquery` contains [unit](https://github.com/j2-health/dbt-bigquery/tree/main/tests/unit) and [functional](https://github.com/j2-health/dbt-bigquery/tree/main/tests/functional) tests. functional tests require testing against an actual BigQuery warehouse. We have CI set up to test against a BigQuery warehouse. In order to run functional tests locally, you will need a `test.env` file in the root of the repository that contains credentials for BigQuery.
 
 Note: This `test.env` file is git-ignored, but please be _extra_ careful to never check in credentials or other sensitive information when developing. To create your `test.env` file, copy the provided example file, then supply your relevant credentials.
 
@@ -102,7 +101,7 @@ You don't need to worry about which `dbt-bigquery` version your change will go i
 
 ## Submitting a Pull Request
 
-dbt Labs provides a CI environment to test changes to the `dbt-bigquery` adapter and periodic checks against the development version of `dbt-core` through Github Actions.
+J2 Health provides a CI environment to test changes to the `dbt-bigquery` adapter and periodic checks against the development version of `dbt-core` through Github Actions.
 
 A `dbt-bigquery` maintainer will review your PR. They may suggest code revision for style or clarity, or request that you add unit or functional test(s). These are good things! We believe that, with a little bit of help, anyone can contribute high-quality code.
 

@@ -12,7 +12,9 @@ try:
 except ImportError:
     # the user has a downlevel version of setuptools.
     print("Error: dbt requires setuptools v40.1.0 or higher.")
-    print('Please upgrade setuptools with "pip install --upgrade setuptools" and try again')
+    print(
+        'Please upgrade setuptools with "pip install --upgrade setuptools" and try again'
+    )
     sys.exit(1)
 
 from pathlib import Path
@@ -46,7 +48,7 @@ setup(
     long_description_content_type="text/markdown",
     author="dbt Labs",
     author_email="info@dbtlabs.com",
-    url="https://github.com/dbt-labs/dbt-bigquery",
+    url="https://github.com/j2-health/dbt-bigquery",
     packages=find_namespace_packages(include=["dbt", "dbt.*"]),
     include_package_data=True,
     install_requires=[
