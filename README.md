@@ -2,11 +2,11 @@
   <img src="https://raw.githubusercontent.com/dbt-labs/dbt/ec7dee39f793aa4f7dd3dae37282cc87664813e4/etc/dbt-logo-full.svg" alt="dbt logo" width="500"/>
 </p>
 <p align="center">
-  <a href="https://github.com/dbt-labs/dbt-bigquery/actions/workflows/main.yml">
-    <img src="https://github.com/dbt-labs/dbt-bigquery/actions/workflows/main.yml/badge.svg?event=push" alt="Unit Tests Badge"/>
+  <a href="https://github.com/j2-health/dbt-bigquery/actions/workflows/main.yml">
+    <img src="https://github.com/j2-health/dbt-bigquery/actions/workflows/main.yml/badge.svg?event=push" alt="Unit Tests Badge"/>
   </a>
-  <a href="https://github.com/dbt-labs/dbt-bigquery/actions/workflows/integration.yml">
-    <img src="https://github.com/dbt-labs/dbt-bigquery/actions/workflows/integration.yml/badge.svg?event=push" alt="Integration Tests Badge"/>
+  <a href="https://github.com/j2-health/dbt-bigquery/actions/workflows/integration.yml">
+    <img src="https://github.com/j2-health/dbt-bigquery/actions/workflows/integration.yml/badge.svg?event=push" alt="Integration Tests Badge"/>
   </a>
 </p>
 
@@ -18,6 +18,10 @@ dbt is the T in ELT. Organize, cleanse, denormalize, filter, rename, and pre-agg
 
 The `dbt-bigquery` package contains all of the code enabling dbt to work with Google BigQuery. For
 more information on using dbt with BigQuery, consult [the docs](https://docs.getdbt.com/docs/profile-bigquery).
+
+## J2 Health Fork
+
+This is a fork maintained by J2 Health with custom modifications. Current version: 1.9.2
 
 ## Getting started
 
@@ -31,8 +35,8 @@ more information on using dbt with BigQuery, consult [the docs](https://docs.get
 
 ## Reporting bugs and contributing code
 
-- Want to report a bug or request a feature? Let us know on [Slack](http://community.getdbt.com/), or open [an issue](https://github.com/dbt-labs/dbt-bigquery/issues/new)
-- Want to help us build dbt? Check out the [Contributing Guide](https://github.com/dbt-labs/dbt-bigquery/blob/HEAD/CONTRIBUTING.md)
+- Want to report a bug or request a feature? Let us know on [Slack](http://community.getdbt.com/), or open [an issue](https://github.com/j2-health/dbt-bigquery/issues/new)
+- Want to help us build dbt? Check out the [Contributing Guide](https://github.com/j2-health/dbt-bigquery/blob/HEAD/CONTRIBUTING.md)
 
 ## Code of Conduct
 
