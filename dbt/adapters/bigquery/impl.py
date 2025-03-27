@@ -20,7 +20,12 @@ import google.api_core
 import google.auth
 import google.oauth2
 import google.cloud.bigquery
-from google.cloud.bigquery import AccessEntry, Client, SchemaField, Table as BigQueryTable
+from google.cloud.bigquery import (
+    AccessEntry,
+    Client,
+    SchemaField,
+    Table as BigQueryTable,
+)
 import google.cloud.exceptions
 import pytz
 
@@ -46,7 +51,12 @@ from dbt.adapters.base import (
 )
 from dbt.adapters.base.impl import FreshnessResponse
 from dbt.adapters.cache import _make_ref_key_dict
-from dbt.adapters.capability import Capability, CapabilityDict, CapabilitySupport, Support
+from dbt.adapters.capability import (
+    Capability,
+    CapabilityDict,
+    CapabilitySupport,
+    Support,
+)
 from dbt.adapters.contracts.connection import AdapterResponse
 from dbt.adapters.contracts.macros import MacroResolverProtocol
 from dbt.adapters.contracts.relation import RelationConfig
@@ -54,8 +64,14 @@ from dbt.adapters.events.logging import AdapterLogger
 from dbt.adapters.events.types import SchemaCreation, SchemaDrop
 
 from dbt.adapters.bigquery.column import BigQueryColumn, get_nested_column_data_types
-from dbt.adapters.bigquery.connections import BigQueryAdapterResponse, BigQueryConnectionManager
-from dbt.adapters.bigquery.dataset import add_access_entry_to_dataset, is_access_entry_in_dataset
+from dbt.adapters.bigquery.connections import (
+    BigQueryAdapterResponse,
+    BigQueryConnectionManager,
+)
+from dbt.adapters.bigquery.dataset import (
+    add_access_entry_to_dataset,
+    is_access_entry_in_dataset,
+)
 from dbt.adapters.bigquery.python_submissions import (
     ClusterDataprocHelper,
     ServerlessDataProcHelper,
@@ -136,8 +152,12 @@ class BigQueryAdapter(BaseAdapter):
 
     _capabilities: CapabilityDict = CapabilityDict(
         {
-            Capability.TableLastModifiedMetadata: CapabilitySupport(support=Support.Full),
-            Capability.SchemaMetadataByRelations: CapabilitySupport(support=Support.Full),
+            Capability.TableLastModifiedMetadata: CapabilitySupport(
+                support=Support.Full
+            ),
+            Capability.SchemaMetadataByRelations: CapabilitySupport(
+                support=Support.Full
+            ),
         }
     )
 
@@ -199,7 +219,7 @@ class BigQueryAdapter(BaseAdapter):
 
     @available
     def list_schemas(self, database: str) -> List[str]:
-        return self.connections.list_dataset(database)
+        return []
 
     @available.parse(lambda *a, **k: False)
     def check_schema_exists(self, database: str, schema: str) -> bool:
@@ -229,10 +249,14 @@ class BigQueryAdapter(BaseAdapter):
     ) -> Dict[str, Dict[str, Optional[str]]]:
         return get_nested_column_data_types(columns, constraints)
 
-    def get_columns_in_relation(self, relation: BigQueryRelation) -> List[BigQueryColumn]:
+    def get_columns_in_relation(
+        self, relation: BigQueryRelation
+    ) -> List[BigQueryColumn]:
         try:
             table = self.connections.get_bq_table(
-                database=relation.database, schema=relation.schema, identifier=relation.identifier
+                database=relation.database,
+                schema=relation.schema,
+                identifier=relation.identifier,
             )
             return self._get_dbt_columns_from_bq_table(table)
 
@@ -241,7 +265,9 @@ class BigQueryAdapter(BaseAdapter):
             return []
 
     @available.parse(lambda *a, **k: [])
-    def add_time_ingestion_partition_column(self, partition_by, columns) -> List[BigQueryColumn]:
+    def add_time_ingestion_partition_column(
+        self, partition_by, columns
+    ) -> List[BigQueryColumn]:
         """Add time ingestion partition column to columns list"""
         columns.append(
             self.Column(
@@ -253,7 +279,9 @@ class BigQueryAdapter(BaseAdapter):
         )
         return columns
 
-    def expand_column_types(self, goal: BigQueryRelation, current: BigQueryRelation) -> None:
+    def expand_column_types(
+        self, goal: BigQueryRelation, current: BigQueryRelation
+    ) -> None:
         # This is a no-op on BigQuery
         pass
 
@@ -303,7 +331,9 @@ class BigQueryAdapter(BaseAdapter):
         if self._schema_is_cached(database, schema):
             # if it's in the cache, use the parent's model of going through
             # the relations cache and picking out the relation
-            return super().get_relation(database=database, schema=schema, identifier=identifier)
+            return super().get_relation(
+                database=database, schema=schema, identifier=identifier
+            )
 
         try:
             table = self.connections.get_bq_table(database, schema, identifier)
@@ -376,7 +406,9 @@ class BigQueryAdapter(BaseAdapter):
     ###
     # Implementation details
     ###
-    def _make_match_kwargs(self, database: str, schema: str, identifier: str) -> Dict[str, str]:
+    def _make_match_kwargs(
+        self, database: str, schema: str, identifier: str
+    ) -> Dict[str, str]:
         return filter_null_values(
             {
                 "database": database,
@@ -498,14 +530,19 @@ class BigQueryAdapter(BaseAdapter):
             return True
         elif conf_partition and table.time_partitioning is not None:
             table_field = (
-                table.time_partitioning.field.lower() if table.time_partitioning.field else None
+                table.time_partitioning.field.lower()
+                if table.time_partitioning.field
+                else None
             )
 
             table_granularity = table.partitioning_type
             conf_table_field = conf_partition.field
             return (
                 table_field == conf_table_field.lower()
-                or (conf_partition.time_ingestion_partitioning and table_field is not None)
+                or (
+                    conf_partition.time_ingestion_partitioning
+                    and table_field is not None
+                )
             ) and table_granularity.lower() == conf_partition.granularity.lower()
         elif conf_partition and table.range_partitioning is not None:
             dest_part = table.range_partitioning
@@ -548,7 +585,9 @@ class BigQueryAdapter(BaseAdapter):
 
         try:
             table = self.connections.get_bq_table(
-                database=relation.database, schema=relation.schema, identifier=relation.identifier
+                database=relation.database,
+                schema=relation.schema,
+                identifier=relation.identifier,
             )
         except google.cloud.exceptions.NotFound:
             return True
@@ -570,7 +609,9 @@ class BigQueryAdapter(BaseAdapter):
         return PartitionConfig.parse(raw_partition_by)
 
     def get_table_ref_from_relation(self, relation: BaseRelation):
-        return self.connections.table_ref(relation.database, relation.schema, relation.identifier)
+        return self.connections.table_ref(
+            relation.database, relation.schema, relation.identifier
+        )
 
     def _update_column_dict(self, bq_column_dict, dbt_columns, parent=""):
         """
@@ -589,7 +630,9 @@ class BigQueryAdapter(BaseAdapter):
             column_config = dbt_columns[dotted_column_name]
             bq_column_dict["description"] = column_config.get("description")
             if bq_column_dict["type"] != "RECORD":
-                bq_column_dict["policyTags"] = {"names": column_config.get("policy_tags", list())}
+                bq_column_dict["policyTags"] = {
+                    "names": column_config.get("policy_tags", list())
+                }
 
         new_fields = []
         for child_col_dict in bq_column_dict.get("fields", list()):
@@ -701,11 +744,15 @@ class BigQueryAdapter(BaseAdapter):
         cls, table: "agate.Table", used_schemas: FrozenSet[Tuple[str, str]]
     ) -> "agate.Table":
         table = table.rename(
-            column_names={col.name: col.name.replace("__", ":") for col in table.columns}
+            column_names={
+                col.name: col.name.replace("__", ":") for col in table.columns
+            }
         )
         return super()._catalog_filter_table(table, used_schemas)
 
-    def _get_catalog_schemas(self, relation_config: Iterable[RelationConfig]) -> SchemaSearchMap:
+    def _get_catalog_schemas(
+        self, relation_config: Iterable[RelationConfig]
+    ) -> SchemaSearchMap:
         candidates = super()._get_catalog_schemas(relation_config)
         db_schemas: Dict[str, Set[str]] = {}
         result = SchemaSearchMap()
@@ -751,7 +798,7 @@ class BigQueryAdapter(BaseAdapter):
         opts = {}
 
         if (config.get("hours_to_expiration") is not None) and (not temporary):
-            expiration = f'TIMESTAMP_ADD(CURRENT_TIMESTAMP(), INTERVAL {config.get("hours_to_expiration")} hour)'
+            expiration = f"TIMESTAMP_ADD(CURRENT_TIMESTAMP(), INTERVAL {config.get('hours_to_expiration')} hour)"
             opts["expiration_timestamp"] = expiration
 
         if config.persist_relation_docs() and "description" in node:  # type: ignore[attr-defined]
@@ -774,7 +821,9 @@ class BigQueryAdapter(BaseAdapter):
             opts["kms_key_name"] = f"'{config.get('kms_key_name')}'"
 
         if temporary:
-            opts["expiration_timestamp"] = "TIMESTAMP_ADD(CURRENT_TIMESTAMP(), INTERVAL 12 hour)"
+            opts["expiration_timestamp"] = (
+                "TIMESTAMP_ADD(CURRENT_TIMESTAMP(), INTERVAL 12 hour)"
+            )
         else:
             # It doesn't apply the `require_partition_filter` option for a temporary table
             # so that we avoid the error by not specifying a partition with a temporary table
@@ -783,14 +832,20 @@ class BigQueryAdapter(BaseAdapter):
                 config.get("require_partition_filter") is not None
                 and config.get("partition_by") is not None
             ):
-                opts["require_partition_filter"] = config.get("require_partition_filter")
+                opts["require_partition_filter"] = config.get(
+                    "require_partition_filter"
+                )
             if config.get("partition_expiration_days") is not None:
-                opts["partition_expiration_days"] = config.get("partition_expiration_days")
+                opts["partition_expiration_days"] = config.get(
+                    "partition_expiration_days"
+                )
 
         return opts
 
     @available.parse(lambda *a, **k: {})
-    def get_view_options(self, config: Dict[str, Any], node: Dict[str, Any]) -> Dict[str, Any]:
+    def get_view_options(
+        self, config: Dict[str, Any], node: Dict[str, Any]
+    ) -> Dict[str, Any]:
         opts = self.get_common_options(config, node)
         return opts
 
@@ -832,12 +887,14 @@ class BigQueryAdapter(BaseAdapter):
         if entity_type == "view":
             entity = self.get_table_ref_from_relation(entity).to_api_repr()
         with _dataset_lock:
-            dataset_ref = self.connections.dataset_ref(grant_target.project, grant_target.dataset)
+            dataset_ref = self.connections.dataset_ref(
+                grant_target.project, grant_target.dataset
+            )
             dataset = client.get_dataset(dataset_ref)
             access_entry = AccessEntry(role, entity_type, entity)
             # only perform update if access entry not in dataset
             if is_access_entry_in_dataset(dataset, access_entry):
-                logger.warning(f"Access entry {access_entry} " f"already exists in dataset")
+                logger.warning(f"Access entry {access_entry} already exists in dataset")
             else:
                 dataset = add_access_entry_to_dataset(dataset, access_entry)
                 client.update_dataset(dataset, ["access_entries"])
@@ -864,7 +921,9 @@ class BigQueryAdapter(BaseAdapter):
             except_operator=except_operator,
         )
 
-    def timestamp_add_sql(self, add_to: str, number: int = 1, interval: str = "hour") -> str:
+    def timestamp_add_sql(
+        self, add_to: str, number: int = 1, interval: str = "hour"
+    ) -> str:
         return f"timestamp_add({add_to}, interval {number} {interval})"
 
     def string_add_sql(
@@ -897,7 +956,9 @@ class BigQueryAdapter(BaseAdapter):
         else:
             return list(res)
 
-    def generate_python_submission_response(self, submission_result) -> BigQueryAdapterResponse:
+    def generate_python_submission_response(
+        self, submission_result
+    ) -> BigQueryAdapterResponse:
         return BigQueryAdapterResponse(_message="OK")
 
     @property
@@ -913,7 +974,9 @@ class BigQueryAdapter(BaseAdapter):
 
     @available
     @classmethod
-    def render_raw_columns_constraints(cls, raw_columns: Dict[str, Dict[str, Any]]) -> List:
+    def render_raw_columns_constraints(
+        cls, raw_columns: Dict[str, Dict[str, Any]]
+    ) -> List:
         rendered_constraints: Dict[str, str] = {}
         for raw_column in raw_columns.values():
             for con in raw_column.get("constraints", None):
@@ -937,7 +1000,9 @@ class BigQueryAdapter(BaseAdapter):
         return rendered_column_constraints
 
     @classmethod
-    def render_column_constraint(cls, constraint: ColumnLevelConstraint) -> Optional[str]:
+    def render_column_constraint(
+        cls, constraint: ColumnLevelConstraint
+    ) -> Optional[str]:
         c = super().render_column_constraint(constraint)
         if (
             constraint.type == ConstraintType.primary_key
